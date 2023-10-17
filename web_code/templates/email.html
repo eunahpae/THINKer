@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="content_wrap">
+  <div class="box">
+    <h4>가입을 위한 이메일 확인 </h4>
+    <form action="/email" method='POST'>
+      <input type="email" placeholder="Email 을 입력해주세요." name="email" id="email" required>
+      <input type='submit' id='email_btn' value='확    인'>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+<div class="content_wrap">
+  <div class="box">
+    <p>가입을 위해서 휴대폰 정보를 입력해주세요.</p>
+    <form action='/update_phone' , method="POST">
+      <input type="email" placeholder="Email" name="email" id="email" value='{{ email }}' readonly>
+      <input type="text" placeholder="Phone" name="phone" id="phone" required>
+      <div>
+        <button type="submit"> 제출</button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div style="background-color: #e4e5e0;">
+  <div class="position-relative container">
+    <img src="{{url_for('static',filename='images/mainpage/main.jpg')}}" class="img-fluid border-0">
+    <div class="thinker-text container-sm ps-3">
+      <p class="fs-1">2023 THINKer</p>
+      <p class="fs-1">독서능력진단평가</p>
+      <button class="btn btn-light" type="button"><a href="/test">시험응시</a></button>
+    </div>
+  </div>
+</div>
+
+<!-- 공지사항 -->
+
+<div class="container-fluid container-sm bg-body-light" id="board">
+  <div class="row g-5 mt-auto">
+    <div class="col-sm-6">
+      <h3>공지사항</h3>
+      <table class="table table-striped mt-3">
+        <tr>
+          <td width="70%">2023 북콘서트 일정</td>
+          <td width="30%">2023-12-31</td>
+        </tr>
+        <tr>
+          <td>2023 북콘서트 일정</td>
+          <td>2023-12-31</td>
+        </tr>
+        <tr>
+          <td>2023 북콘서트 일정</td>
+          <td>2023-12-31</td>
+        </tr>
+      </table>
+    </div>
+    <div class="col-sm-6">
+      <h3>이벤트</h3>
+      <table class="table table-striped mt-3">
+        <tr>
+          <td width="70%">2023 북콘서트 일정</td>
+          <td width="30%">2023-12-31</td>
+        </tr>
+        <tr>
+          <td>2023 북콘서트 일정</td>
+          <td>2023-12-31</td>
+        </tr>
+        <tr>
+          <td>2023 북콘서트 일정</td>
+          <td>2023-12-31</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 이달의 추천 도서 -->
+<div class="bg-body-tertiary">
+  <div class="container-fluid container-sm">
+    <div class="row g-5 mt-5 pb-3">
+      <h3 class="title">이달의 추천도서</h3>
+
+      <div class="col-sm-3">
+        <div class="card">
+          <img src="{{url_for('static',filename='images/mainpage/rcmd2.png')}}">
+          <div class="card-body">
+            <h5 class="card-title">세이노의 가르침</h5>
+            <p class="card-text">세이노</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <img src="{{url_for('static',filename='images/mainpage/rcmd3.png')}}">
+          <div class="card-body">
+            <h5 class="card-title">도둑 맞은 집중</h5>
+            <p class="card-text">요한 하리</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <img src="{{url_for('static',filename='images/mainpage/rcmd4.png')}}">
+          <div class="card-body">
+            <h5 class="card-title">모든 삶은 흐른다</h5>
+            <p class="card-text">로랑스 드빌레르</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="card">
+          <img src="{{url_for('static',filename='images/mainpage/rcmd1.png')}}">
+          <div class="card-body">
+            <h5 class="card-title">1%를 읽는 힘</h5>
+            <p class="card-text">메르</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 이벤트 -->
+<div class="container-sm justify-content-center align-items-center mt-5 mb-5">
+  <h3 class="title">이벤트</h3>
+  <div class="row g-5 mt-3"> <!-- Modified class and added alignment -->
+    <div class="col-sm-6">
+      <div class="card border-0">
+        <img src="{{url_for('static',filename='images/mainpage/event1.png')}}">
+        <div class="w-100 bottom-0 start-0 bg-body-tertiary p-3">
+          <h5 class="card-title">2023 인생도서 만들기 프로젝트[제휴업체 이벤트]</h5>
+          <p class="card-text">내 삶의 이정표가 되어줄 인생도서 만들기 프로젝트 참가 신청</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="card border-0">
+        <img src="{{url_for('static',filename='images/mainpage/event2.png')}}">
+        <div class="w-100 bottom-0 start-0 bg-body-tertiary p-3">
+          <h5 class="card-title">문해력 높이기 과정 회원모집[제휴업체 이벤트]</h5>
+          <p class="card-text">즐거운 독서토론을 통해 문해력 성장과정을 설계하세요.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!-- 결과항목 -->
+<div class="container-fluid container-sm bg-body-light pb-5">
+  <div class="container-fluid container-sm bg-body-light">
+    <div class="row g-5 mt-4" style="background-color:#F8F9FA">
+      <div class="col-sm-12 pb-5" style="background-color:#F8F9FA">
+        <h2> ◆ <b style="color:blue"> {{session['username'] }}</b> 님의 진단 결과</h2><br>
+        <h4 id='total' style="margin-left:50px;"> </h4><br>
+        <h5 style="margin-left:50px;"> 각 항목별 결과는 다음과 같습니다.</h5><br><br>
+
+        <div class="ct_canvas">
+          <canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+
+        <script>
+          let data = '{{data}}';
+          data1 = data.slice(1, length - 1)
+          data = data1.replace(/ /g, '')
+          console.log(data)
+          let j = 0;
+          let total = 0;
+          uScore = []
+          for (var i of data) {
+            uScore[j++] = i * 50;
+            total += i * 50 / 5;
+          }
+          document.getElementById('total').innerHTML = "총점 : " + total + " 점";
+          let aScore = [60, 70, 60, 40, 12];
+          console.log(uScore)
+          let delayed;
+
+          const ctx = document.getElementById('myChart').getContext('2d');
+          Chart.defaults.font.size = 13;
+          const myChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+              labels: ['어휘력', '사실적 이해', '추론적 이해', '비판적 이해', '창의력'],
+              datasets: [{
+                label: '평균 문해력',
+                data: aScore,
+                fill: true,
+                backgroundColor: 'rgba(0, 60, 255, 0)',
+                borderColor: 'black',
+                borderWidth: 2
+              },
+              {
+                label: '나의 문해력',
+                data: uScore,
+                fill: true,
+                backgroundColor: 'rgba(255, 47, 175, 0.3)',
+                borderColor: 'rgba(255, 47, 175, 0.5)',
+                borderWidth: 2
+              }]
+            },
+
+            options: {
+              plugins: {
+                legend: {
+                  // position : "bottom",
+                  labels: {
+                    // boxWidth: 0,
+                    color: "black",
+                    font: {
+                      size: 20,
+                    }
+                  }
+                },
+              },
+
+              scales: {
+                r: {
+                  max: 100,
+                  min: 0,
+                  ticks: {
+                    beginAtZero: true,
+                    stepSize: 20,
+
+                  },
+                  pointLabels: {
+                    color: 'rgba(54, 162, 235, 1)',
+                    font: {
+                      size: 16,
+                    },
+                  }
+                }
+              },
+
+              animation: {
+                onComplete: () => {
+                  delayed = true;
+                },
+                delay: (context) => {
+                  let delay = 0;
+                  if (context.type === 'data' && context.mode === 'default' && !delayed) {
+                    delay = context.dataIndex * 500 + context.datasetIndex * 2000;
+                  }
+                  return delay;
+                },
+              },
+            } //option
+          });
+        </script>
+
+        <div id="chart-container">
+          <canvas id="barChart"></canvas>
+        </div><br><br>
+
+        <script>
+            // 데이터
+            const categories = ['내 점수', '성별 평균', '연령대 평균', '전체 평균'];
+            // 서버에서 보내준 데이터 값 담아주기(scores 데이터를 챠트에 대입)
+            const points = {{scores}};  // 여기에 각 항목의 점수를 채워넣으세요
+
+            const canvas = document.getElementById('barChart').getContext('2d');
+
+            new Chart(canvas, {
+              type: 'bar',
+              data: {
+                labels: categories,
+                datasets: [{
+                  label: 'Points',
+                  data: points,
+                  backgroundColor: ['blue', 'green', 'orange', 'purple']  // 각 항목에 맞는 색상 설정
+                }]
+              },
+              options: {
+                maxBarThickness: 50,
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    max: 100
+                  }
+                },
+                responsive: true,
+                plugins: {
+                  title: {
+                    display: true,
+                    text: ' 나의 독서능력 현황 '
+                  }
+                }
+              }
+            });
+          </script>
+
+        <table class="table w-75 table-striped table-borderless mx-auto table-responsive center">
+          <thead>
+            <tr style="text-align:center">
+              <th>항 목</th>
+              <th>설 명</th>
+            </tr>
+          </thead>
+          <tr>
+            <th style="width:15%; text-align: center;">어휘력</th>
+            <td>어휘 점수는 텍스트에서 접하는 단어와 구문에 대한 이해도를 평가하여 독자의 언어 이해도를 평가합니다. 문맥과 뉘앙스를 포함하여 광범위한 단어를 인식하고, 정의하고,
+              사용하는 능력을
+              측정합니다.</td>
+          </tr>
+          <tr>
+            <th style="width:15%; text-align: center;">사실적 이해</th>
+            <td>사실적 이해는 텍스트에 제시된 특정 세부 사항과 정보를 이해하고 기억하는 독자의 능력을 측정합니다. 이 점수는 읽기 자료에서 주요 사실, 사건, 날짜 및 기타
+              구체적인 요소를
+              식별하는 독자의 능력을 반영합니다.</td>
+          </tr>
+          <tr>
+            <th style="width:15%; text-align: center;">추론적 이해</th>
+            <td>추론 이해는 표면 수준의 이해를 넘어 본문에 명시적으로 언급되지 않은 의미를 추론하거나 추론하는 독자의 능력을 평가합니다. 이 점수는 논리적 결론을 도출하고,
+              예측하고, 텍스트 내
+              암시된 관계를 인식하는 능력을 반영합니다.</td>
+          </tr>
+          <tr>
+            <th style="width:15%; text-align: center;">비판적 이해</th>
+            <td>비판적 이해는 비판적 관점에서 텍스트를 분석하고 평가하는 독자의 기술을 측정합니다. 저자의 목적, 어조, 편견, 근본적인 주장을 식별하는 능력뿐만 아니라 텍스트의
+              추론과 증거에서
+              강점과 약점을 식별하는 독자의 능력도 평가합니다.</td>
+          </tr>
+          <tr>
+            <th style="width:15%; text-align: center;">창의력</th>
+            <td>창의성은 텍스트에 대한 독자의 상상력과 표현력을 평가합니다. 이 점수는 이해력을 뛰어넘어 자료를 기반으로 고유한 통찰력, 아이디어 또는 해석을 생성하는 독자의 능력을
+              분석합니다.
+              이는 창의적으로 생각하고 콘텐츠에 대한 새로운 관점을 제시하는 능력을 반영합니다.</td>
+          </tr>
+        </table>
+      </div>
+
+    </div>
+  </div>
+  <div class="container-fluid container-sm bg-body-light">
+    <div class="row g-5 mt-5">
+      <div class="col-sm-12">
+        <div class="row g-5">
+        </div>
+        <h3> ◆ 추천 도서 리스트</h3><br>
+        <h5 style="margin-left:90px"><b style="color:blue">{{session['username'] }}</b> 님이 선호하는 장르에서 테스트결과와 부합하는 책을 추천합니다.</h5><br><br>
+      </div>
+      <div class="container">
+        <div class="row">
+          <!-- edu 목록 중 book2에 category가 존재하지 않으면 책 목록이 나오지 않도록 if문 삽입 -->
+          {% if (books[0]) %}
+          <!-- Book 1 -->
+          <div class="col-md-4 text-center">
+            <img src="{{ books[0][1] }}" alt="책 표지 1" class="book_img">
+            <p style='font-size:20px'>{{ books[0][2] }}</p>
+            <p>{{ books[0][3] }}</p>
+            <p>{{ books[0][4] }}</p>
+          </div>
+
+          <!-- Book 2 -->
+          <div class="col-md-4 text-center">
+            <img src="{{ books[1][1] }}" alt="책 표지 2" class="book_img">
+            <p style='font-size:20px'>{{ books[1][2] }}</p>
+            <p>{{ books[1][3] }}</p>
+            <p>{{ books[1][4] }}</p>
+          </div>
+
+          <!-- Book 3 -->
+          <div class="col-md-4 text-center">
+            <img src="{{ books[2][1] }}" alt="책 표지 3" class="book_img">
+            <p style='font-size:20px'>{{ books[2][2] }}</p>
+            <p>{{ books[2][3] }}</p>
+            <p>{{ books[2][4] }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+
+    </div>
+    <!-- 심화 컨설팅 -->
+    <div class="container-fluid container-sm bg-body-light">
+      <div class="row g-5 mt-4">
+        <div class="col-sm-12">
+          <div class="row g-5 mb-4 text-center">
+            <h4 style="color: #BA0325;">더 많고 다양한 분야의 책을 추천 받고싶다면! <a href="/end"
+                class="btn btn-outline-danger">심화컨설팅</a></h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,289 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="container pt-4 mb-4">
+  <h3 class="pt-4">독서능력 진단 평가 : </h3>
+  <div class="example mt-5">
+    <form action="/test" method='POST'>
+      <ol>
+        {% if session['is_loged_in'] %}
+        <li hidden>
+          <div class="form-outline mb-4">
+            <label class="form-label" for="form6Example3">회원ID</label>
+            <input type="text" name="iduser" id="iduser" class="form-control" value="{{  session['iduser'] }}" readonly>
+          </div>
+        </li>
+        {% endif %}
+        <li class="mt-5" value="{{ quiz[0][0] }}">{{ quiz[0][0] }}. {{ quiz[0][1] }}
+          <ul>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="1" value="1">
+                {{ quiz[0][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="1" value="2">
+                {{ quiz[0][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="1" value="3">
+                {{ quiz[0][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="1" value="4">
+                {{ quiz[0][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="1" value="5">
+                {{ quiz[0][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[1][0] }}. {{ quiz[1][1] }}
+          <ul>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="2" value="1">
+                {{ quiz[1][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="2" value="2">
+                {{ quiz[1][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="2" value="3">
+                {{ quiz[1][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="2" value="4">
+                {{ quiz[1][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="2" value="5">
+                {{ quiz[1][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[2][0] }}. {{ quiz[2][1] }}
+          <ul>
+            <p class="q_text" style="white-space:pre-line;">{{ quiz[2][2] }}</p>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="3" value="1">
+                {{ quiz[2][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="3" value="2">
+                {{ quiz[2][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="3" value="3">
+                {{ quiz[2][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="3" value="4">
+                {{ quiz[2][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="3" value="5">
+                {{ quiz[2][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[3][0] }}. {{ quiz[3][1] }}
+          <ul>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="4" value="1">
+                {{ quiz[3][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="4" value="2">
+                {{ quiz[3][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="4" value="3">
+                {{ quiz[3][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="4" value="4">
+                {{ quiz[3][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="4" value="5">
+                {{ quiz[3][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[4][0] }}. {{ quiz[4][1] }}
+          <ul>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="5" value="1">
+                {{ quiz[4][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="5" value="2">
+                {{ quiz[4][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="5" value="3">
+                {{ quiz[4][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="5" value="4">
+                {{ quiz[4][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="5" value="5">
+                {{ quiz[4][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[5][0] }}. {{ quiz[5][1] }}
+          <ul>
+            <p class="q_text" style="white-space:pre-line;">{{ quiz[5][2] }}</p>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="6" value="1">
+                {{ quiz[5][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="6" value="2">
+                {{ quiz[5][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="6" value="3">
+                {{ quiz[5][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="6" value="4">
+                {{ quiz[5][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="6" value="5">
+                {{ quiz[5][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[6][0] }}. {{ quiz[6][1] }}
+          <ul>
+            <p class="q_text" style="white-space:pre-line;">{{ quiz[6][2] }}</p>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="7" value="1">
+                {{ quiz[6][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="7" value="2">
+                {{ quiz[6][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="7" value="3">
+                {{ quiz[6][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="7" value="4">
+                {{ quiz[6][6] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[7][0] }}. {{ quiz[7][1] }}
+          <ul>
+            <p class="q_text" style="white-space:pre-line;">{{ quiz[7][2] }}</p>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="8" value="1">
+                {{ quiz[7][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="8" value="2">
+                {{ quiz[7][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="8" value="3">
+                {{ quiz[7][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="8" value="4">
+                {{ quiz[7][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="8" value="5">
+                {{ quiz[7][7] }}
+              </li>
+
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[8][0] }}. {{ quiz[8][1] }}
+          <ul>
+            <p class="q_text" style="white-space:pre-line;">{{ quiz[8][2] }}</p>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="9" value="1">
+                {{ quiz[8][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="9" value="2">
+                {{ quiz[8][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="9" value="3">
+                {{ quiz[8][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="9" value="4">
+                {{ quiz[8][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="9" value="5">
+                {{ quiz[8][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+        <li class="mt-5">{{ quiz[9][0] }}. {{ quiz[9][1] }}
+          <ul>
+            <p class="q_text" style="white-space:pre-line;">{{ quiz[9][2] }}</p>
+            <div class="form-check">
+              <li>
+                <input class="form-check-input" type="radio" name="10" value="1">
+                {{ quiz[9][3] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="10" value="2">
+                {{ quiz[9][4] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="10" value="3">
+                {{ quiz[9][5] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="10" value="4">
+                {{ quiz[9][6] }}
+              </li>
+              <li>
+                <input class="form-check-input" type="radio" name="10" value="5">
+                {{ quiz[9][7] }}
+              </li>
+            </div>
+          </ul>
+        </li>
+
+      </ol>
+      <div class="col text-center mb-5">
+        <a href=“/result”><button class="btn btn-danger btn-lg btn-block" type="submit">제 출</button></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table border="1">
+        <tr><th>No</th><th> 제 목 </th><th> 작성자 </th><th> 작성일 </th></tr>
+        {% for i in data: %}            
+            <tr>
+            {% set no = loop.index %}
+            {% for j in i: %}
+                {% if loop.first : %}
+                    <td>{{ no }}</td>
+                {% else : %}    
+                    <td>{{j}}</td>
+                {% endif %}
+            {% endfor %}
+            </tr>
+        {% endfor %}    
+    </table>
+    <a href="/board_register"><button>글쓰기</button> </a>
+
+</body>
+</html>

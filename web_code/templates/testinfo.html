@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="container-sm mt-5">
+  <h3 class="mt-4">◆ 독서능력진단평가 사전 정보 조사</h3>
+  <div class="mt-4 p-4" style="border: 1px solid #333333; background-color:#E4E5E0;">
+    <span>
+      안녕하십니까? 본 테스트는 성인 문해력 테스트로, 개개인의 문해력을 진단/평가하기 위한 것입니다.
+      검사지는 사전 정보 설문 문항과 일상생활에서 접하는 글과 자료를 파악하고 활용하는 능력을 묻는 본 문항 10개로 구성되어 있습니다.
+
+      응답 내용은 오직 진단 및 연구를 위해서만 사용되며, 일체의 개인정보는 철저하게 보호됩니다.
+      문항의 외부 유출과 해당 내용을 허가 없이 상업적 목적으로 무단 전재 또는 사용하는 것을 금지하오니 협조 부탁드립니다.
+      모든 문항에 성실하게 답해주시기 바랍니다. 감사합니다.
+    </span>
+  </div>
+  <form class="m-5" action="/testinfo" method='POST'>
+    <ol>
+      {% if session['is_loged_in'] %}
+      <li hidden>
+        <div class="form-outline mb-4">
+          <label class="form-label" for="form6Example3">회원ID</label>
+          <input type="text" name="iduser" id="iduser" class="form-control" value="{{  session['iduser'] }}" readonly>
+        </div>
+      </li>
+      {% endif %}
+      <li class="info_q">
+        <div class="mt-4">
+          <label class="form-label">1. 귀하의 성별을 선택해주세요.
+          </label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sex" id="sex1" value="1" required>
+            <label class="form-check-label" for="satisfaction-excellent">남</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="sex" id="sex2" value="2" required>
+            <label class="form-check-label" for="satisfaction-very-good">여</label>
+          </div>
+        </div>
+      </li>
+      <li class="info_q">
+        <div class="mt-4">
+          <label for="age" class="form-label">2. 귀하의 출생년도를 선택해주세요.
+          </label>
+          <select class="form-select" id="age" name="age" required></select>
+        </div>
+      </li>
+      <li class="info_q">
+        <div class="mt-4">
+          <label for="location" class="form-label">3. 귀하의 거주 지역을 선택해주세요.</label>
+          <select class="form-select" id="location" name="location" required>
+            <option value="">거주 지역을 선택해주세요.</option>
+            <option value="대도시">대도시</option>
+            <option value="중소도시">중소도시</option>
+            <option value="읍면지역">읍면지역</option>
+          </select>
+        </div>
+      </li>
+      <li class="info_q">
+        <div class="mt-4">
+          <label for="edu" class="form-label">4. 귀하의 평소 독서 선호장르를 선택해주세요.</label>
+          <select class="form-select" id="edu" name="edu" required>
+            <option value="">독서 선호장르를 선택해주세요.</option>
+            <option value="문학">문학</option>
+            <option value="교양인문학">교양인문학</option>
+            <option value="기초과학/교양과학">기초과학/교양과학</option>
+            <option value="자기계발">자기계발</option>
+            <option value="경제">경제</option>
+          </select>
+        </div>
+      </li>
+    </ol>
+    <div class="col text-center">
+      <button type="submit" class="btn btn-primary mt-4">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+  $(document).ready(function () {
+    setDateBox1();
+  });
+
+  function setDateBox1() {
+    var dt = new Date();
+    var year = dt.getFullYear();
+
+    for (var y = (year); y >= (year - 73); y--) {
+      if (year == y) {
+        $("#age").append("<option selected value='" + y + "'>" + y + "년" + "</option>");
+      } else {
+        $("#age").append("<option value='" + y + "'>" + y + "년" + "</option>");
+      }
+    }
+  }
+</script>
+
+{% endblock %}

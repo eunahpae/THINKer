@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<!-- 평가영역 -->
+<div class="container-fluid container-sm bg-body-light">
+    <div class="row g-5 mt-5" style="background-color:#F8F9FA">
+        <div class="col-sm-12">
+            <h3>◆ 평가영역</h3>
+            <table class="table table-light table-borderless w-75 mx-auto text-center">
+                <tr>
+                    <td class="col-4"><img src="{{url_for('static',filename='images/eve/eve1.png')}}" alt="어휘력"
+                            id="des1">
+                    </td>
+                    <td class="col-4"><img src="{{url_for('static',filename='images/eve/eve2.png')}}" alt="독해력"
+                            id="des2">
+                    </td>
+                    <td class="col-4"><img src="{{url_for('static',filename='images/eve/eve3.png')}}" alt="창의력"
+                            id="des3">
+                    </td>
+                </tr>
+                <tr>
+                    <td>정확하고 풍부한 어휘와 표현을 사용할 수 있는 능력</td>
+                    <td>글을 읽고 이해하는 능력</td>
+                    <td>주어진 문제 상황에 대해 다양하면서 새롭고 적절하고 <br>
+                        가치 있는 것을 창출하는 능력 </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- 결과항목 -->
+    <div class="row g-5 mt-5">
+        <div class="col-sm-12" id="result">
+            <h3>◆ 결과항목</h3><br>
+            <p> 각 결과 항목은 다양한 측면에서 독자의 읽기 능력 숙련도에 대한 평가를 합니다.</p><br>
+
+            <div calss="testimg" style="text-align:center;">
+                <img src="{{url_for('static',filename='images/eve/result.png')}}" alt="결과 오각형" id="des4">
+            </div>
+
+            <table class="table w-75 table-striped table-borderless mx-auto table-responsive center mb-5">
+                <thead>
+                    <tr style="text-align:center">
+                        <th>항 목</th>
+                        <th>설 명</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <th style="width:15%; text-align: center;">어휘력</th>
+                    <td>어휘 점수는 텍스트에서 접하는 단어와 구문에 대한 이해도를 평가하여 독자의 언어 이해도를 평가합니다. 문맥과 뉘앙스를 포함하여 광범위한 단어를 인식하고, 정의하고, 사용하는 능력을
+                        측정합니다.</td>
+                </tr>
+                <tr>
+                    <th style="width:15%; text-align: center;">사실적 이해</th>
+                    <td>사실적 이해는 텍스트에 제시된 특정 세부 사항과 정보를 이해하고 기억하는 독자의 능력을 측정합니다. 이 점수는 읽기 자료에서 주요 사실, 사건, 날짜 및 기타 구체적인 요소를
+                        식별하는 독자의 능력을 반영합니다.</td>
+                </tr>
+                <tr>
+                    <th style="width:15%; text-align: center;">추론적 이해</th>
+                    <td>추론 이해는 표면 수준의 이해를 넘어 본문에 명시적으로 언급되지 않은 의미를 추론하거나 추론하는 독자의 능력을 평가합니다. 이 점수는 논리적 결론을 도출하고, 예측하고, 텍스트 내
+                        암시된 관계를 인식하는 능력을 반영합니다.</td>
+                </tr>
+                <tr>
+                    <th style="width:15%; text-align: center;">비판적 이해</th>
+                    <td>비판적 이해는 비판적 관점에서 텍스트를 분석하고 평가하는 독자의 기술을 측정합니다. 저자의 목적, 어조, 편견, 근본적인 주장을 식별하는 능력뿐만 아니라 텍스트의 추론과 증거에서
+                        강점과 약점을 식별하는 독자의 능력도 평가합니다.</td>
+                </tr>
+                <tr>
+                    <th style="width:15%; text-align: center;">창의력</th>
+                    <td>창의성은 텍스트에 대한 독자의 상상력과 표현력을 평가합니다. 이 점수는 이해력을 뛰어넘어 자료를 기반으로 고유한 통찰력, 아이디어 또는 해석을 생성하는 독자의 능력을 분석합니다.
+                        이는 창의적으로 생각하고 콘텐츠에 대한 새로운 관점을 제시하는 능력을 반영합니다.</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="content_wrap">
+  <div class="box">
+    <h1 class="register">회원가입</h1>
+    <span><br>아래 정보를 입력하시면<br>해당 메일로 인증메일이 발송됩니다. </span>
+    <form action="/register" method='POST'>
+      <input type="text" placeholder="Name" name="username" id="username" required>
+      <input type="email" placeholder="Email" name="email" id="email" value='{{ email }}' readonly>
+      <input type="text" placeholder="Phone" name="phone" id="phone" required>
+      <input type="password" placeholder="Password" name="password" id="password" required>
+      <button type="submit" class="btn btn-danger" id="register_btn">회 원 가 입</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

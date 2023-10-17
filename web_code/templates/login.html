@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="content_wrap">
+  <div class="box">
+    <h1>Login</h1>
+    <form action="/login" method='POST'>
+      <input type="email" placeholder="Email" name="email" id="email" required>
+      <input type="password" placeholder="Password" name="password" id="password" required>
+      <button type="submit" class="btn btn-danger" id="thinkerLogin_btn">THINKer 로그인</button>
+    </form>
+    <div class="socialLogin_btn">
+      <a href="/naver"><button class="btn btn-success" id="naverLogin_btn">
+          Naver로 계속하기
+        </button></a>
+      <a href="/kakao"><button class="btn btn-warning" id="KakaoLogin_btn">
+          Kakao로 계속하기
+        </button></a>
+      <a href="/google"><button class="btn btn-white" id="GoogleLogin_btn">
+          Google로 계속하기
+        </button></a>
+    </div>
+    <div class="pt-4 mb-2">
+      <div class="pt-4 mb-2">
+        <p class="mb-5 pb-2" style="color: #171937;">아직 회원이 아니신가요? <a href="/email" style="color: #363e9e;">
+            여기서 회원가입</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

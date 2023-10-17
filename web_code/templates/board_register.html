@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <style>
+    @font-face {
+      font-family: 'RIDIBatang';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    body {
+      font-family: 'RIDIBatang';
+    }
+
+    .box {
+      margin: 0 auto;
+      background-color: rgb(255, 255, 255, 0.9);
+      border-radius: 10px;
+      box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 20px;
+      color: #333333;
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    #thinkerRegister_btn {
+      width: 80%;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    .content_wrap {
+      background-color: #F1F1EF;
+      height: 800px;
+      background-image: url("/static/images/user/bg2.jpg");
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .thinker-wrap {
+      width: 100%;
+      margin: 10px auto;
+      position: relative;
+    }
+
+    .thinker-wrap img {
+      /* width: 100%; */
+      vertical-align: middle;
+      border: none;
+    }
+
+    /*#GoogleLogin_btn {*/
+    /*  border: 1px solid rgba(0, 0, 0, 0.3);*/
+    /*}*/
+
+    .dropdown-toggle::after {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-light">
+    <div class="container-fluid container-sm position-relative">
+      <a href="https://thinkerin.pythonanywhere.com/">
+        <img src="{{url_for('static',filename='images/mainpage/logo_red.png')}}" alt="logo"></a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- <div class="collapse navbar-collapse" id="navbarNavDropdown"> -->
+      <div class="collapse navbar-collapse ms-5" id="navbarSupportedContent"  >
+        <ul class="navbar-nav ms-5">
+          <li class="nav-item ps-4">
+            <a class="nav-link" aria-current="page" href="/intro">기업소개</a>
+          </li>
+            <li class="nav-item dropdown ps-4">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  평가안내
+                </a>
+                <ul class="dropdown-menu ">
+                  <li><a class="dropdown-item" href="/eve">평가항목</a></li>
+                  <li><a class="dropdown-item" href="/eve">결과항목</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown ps-4">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  시험응시
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/testinfo">독서능력평가</a></li>
+                </ul>
+              </li>
+              <li class="nav-item dropdown ps-4">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  컨설팅
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="/result">기본결과</a></li>
+                  <li><a class="dropdown-item" href="#">심화컨설팅</a></li>
+                </ul>
+              </li>
+          <li class="nav-item dropdown ps-4">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              커뮤니티
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">공지사항</a></li>
+              <li><a class="dropdown-item" href="#">이벤트</a></li>
+              <li><a class="dropdown-item" href="#">Q&A</a></li>
+            </ul>
+          </li>
+
+
+      <div class="position-absolute end-0 ">
+            {% if session['is_loged_in'] %}
+                <a class="btn btn-danger" href="/logout"> {{session['username']}} 님,  로그아웃</a>
+                {% else %}
+                <a class="btn btn-primary" href="/login">로그인</a>
+            {% endif %}
+      </div>
+    </ul>
+    </div>
+    </div>
+  </nav>
+
+  <div class="content_wrap">
+    <div class="box">
+      <h3>공지사항 및 이벤트 등록</h3>
+      <form action="/board" method="post">
+        <label for="cat">카테고리 :</label>
+        <select name="category" id="cat">
+            <option value="1">공지사항</option>
+            <option value="2">이벤트</option>
+        </select>
+        <br>
+        <label for="b_tle"> 제 목 :</label>
+        <input type="text" name="title" value="" id="b_tle"> <br>
+        <label for="b_ath"> 작 성 자 : </label>
+        <input type="text" name="author" value="" id="b_ath"><br>
+        <label for="b_cnt"> 내 용 :</label>
+        <textarea name="content" id="b_cnt"></textarea>
+        <input type="submit" value="전송">
+    </form>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="container-fluid bg-body-secondary">
+    <div class="container-sm">
+      <footer class="row pt-3">
+        <div class="col-sm-10">
+          <p class="fst-normal" style="font-size: smaller;"> 회사소개 | 개인정보처리방침 | 이용약관 | 오시는 길 </p>
+          <p class="fst-normal" style="font-size: smaller;"> thinker | 사업자등록번호:210-91-08887 | 주소:서울 노원구 통일로 1351 2층
+            (상계동) |<br> 대표 : 배은아 |
+            Tel : 02-952-1163 | Fax : 02-952-7116 | Email : thinker@gmail.com | 개인정보보호책임자 : 배은아</p>
+          <p style="font-size: smaller;">Copyright thinker corp. All Right Reserved.</p>
+        </div>
+        <div class="col-sm-2 pe-0 text-end">
+          <a href="https://www.facebook.com/"><img src="/static/images/mainpage/sns1.png"></a>
+          <a href="https://www.google.co.kr/?hl=ko"><img src="/static/images/mainpage/sns2.png"></a>
+          <a href="https://www.youtube.com/"><img src="/static/images/mainpage/sns3.png"></a>
+          <a href="https://www.instagram.com/"><img src="/static/images/mainpage/sns4.png"></a>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="/board" method="post">
+        <label for="cat">카테고리 :</label>
+        <select name="category" id="cat">
+            <option value="1">공지사항</option>
+            <option value="2">이벤트</option>
+        </select>
+        <br>
+        <label for="b_tle"> 제 목 :</label>
+        <input type="text" name="title" value="" id="b_tle"> <br>
+        <label for="b_ath"> 작 성 자 : </label>
+        <input type="text" name="author" value="" id="b_ath"><br>
+        <label for="b_cnt"> 내 용 :</label>
+        <textarea name="content" id="b_cnt"></textarea>
+        <input type="submit" value="전송">
+    </form> -->
+    <!-- <table border="1">
+        <tr><th>No</th><th> 제 목 </th><th> 작성자 </th><th> 작성일 </th></tr>
+        {% for i in data: %}            
+            <tr>
+            {% set no = loop.index %}
+            {% for j in i: %}
+                {% if loop.first : %}
+                    <td>{{ no }}</td>
+                {% else : %}    
+                    <td>{{j}}</td>
+                {% endif %}
+            {% endfor %}
+            </tr>
+        {% endfor %}    
+    </table>
+    <button>글쓰기</button>  -->
+
+</body>
+</html>

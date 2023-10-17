@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<script>(function (w, d, s, l, i) {
+			w[l] = w[l] || []; w[l].push({
+				'gtm.start':
+					new Date().getTime(), event: 'gtm.js'
+			}); var f = d.getElementsByTagName(s)[0],
+				j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+					'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+		})(window, document, 'script', 'dataLayer', 'GTM-MTBZJFJT');</script>
+	<!-- End Google Tag Manager -->
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>THINKer*</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"
+		integrity="sha512-6HrPqAvK+lZElIZ4mZ64fyxIBTsaX5zAFZg2V/2WT+iKPrFzTzvx6QAsLW2OaLwobhMYBog/+bvmIEEGXi0p1w=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" type="text/css" href="../static/css/reset.css" />
+	<link rel="stylesheet" type="text/css" href="../static/css/style.css" />
+	<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('.faq>dd').hide()
+			// $('.faq>dt>a').on('click', function(){
+			//     $('.faq>dd').hide() //모든 답변 요소 안보이게 초기화
+			//     $(this).parent().next().slideDown() //클릭된 버튼의 답변만 보이게 지정
+			//     $('.faq>dt>a').removeClass('active') // 모든 버튼요소 스타일 초기화
+			//     $(this).addClass('active') // 클릭한 버튼만 선택된 스타일 적용
+
+			// })
+
+			// 토글되는 faq
+			$('.faq>dt>a').on('click', function () {
+
+				$(this).parent().next().toggle().siblings('dd').hide()
+				$(this).toggleClass('active').parent().siblings().children('a').removeClass('active')
+			})
+		})
+
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!-- Google Tag Manager -->
+
+
+</head>
+
+<body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTBZJFJT" height="0" width="0"
+			style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
+	<nav class="navbar navbar-expand-lg bg-body-light">
+		<div class="container-fluid container-sm position-relative">
+			<a href="/">
+				<img src="{{url_for('static',filename='images/mainpage/logo_red.png')}}" alt="logo"></a>
+
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<!-- <div class="collapse navbar-collapse" id="navbarNavDropdown"> -->
+			<div class="collapse navbar-collapse ms-5" id="navbarSupportedContent">
+				<ul class="navbar-nav ms-5">
+					<li class="nav-item ps-4">
+						<a class="nav-link" aria-current="page" href="/intro">기업소개</a>
+					</li>
+					<li class="nav-item dropdown ps-4">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							평가안내
+						</a>
+						<ul class="dropdown-menu ">
+							<li><a class="dropdown-item" href="/eve">평가항목</a></li>
+							<li><a class="dropdown-item" href="/eve#result">결과항목</a></li>
+						</ul>
+					</li>
+					<li class="nav-item dropdown ps-4">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							시험응시
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="/test">독서능력평가</a></li>
+						</ul>
+					</li>
+					<li class="nav-item dropdown ps-4">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							컨설팅
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="/result">기본결과</a></li>
+							<li><a class="dropdown-item" href="/end">심화컨설팅</a></li>
+						</ul>
+					</li>
+					<li class="nav-item dropdown ps-4">
+						<a class="nav-link dropdown-toggle" href="/end" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							커뮤니티
+						</a>
+						<ul class="dropdown-menu">
+							<li><a class="dropdown-item" href="/end">공지사항</a></li>
+							<li><a class="dropdown-item" href="/end">이벤트</a></li>
+							<li><a class="dropdown-item" href="/faq">FAQ</a></li>
+						</ul>
+					</li>
+
+					<div class="position-absolute end-0 ">
+						{% if session['is_loged_in'] %}
+						<b>{{session['username']}}</b> 님 <a class="btn btn-danger" href="/logout">로그아웃</a>
+						{% else %}
+						<a class="btn btn-primary" href="/login">로그인</a>
+						{% endif %}
+					</div>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+
+	{% block body %}
+	{% endblock %}
+
+
+	<!-- footer -->
+	<div class="container-fluid bg-body-secondary pb-2">
+		<div class="container-sm ">
+			<footer class="row pt-4">
+				<div class="col-sm-10">
+					<p class="fst-normal" style="font-size: smaller;"> 회사소개 | 개인정보처리방침 | 이용약관 | 오시는 길 </p>
+					<p class="fst-normal" style="font-size: smaller;"> thinker | 사업자등록번호:210-91-08887 | 주소:서울 노원구 통일로
+						1351 2층
+						(상계동) <br> 대표 : 배은아 |
+						Tel : 02-952-1163 | Fax : 02-952-7116 | Email : thinker@gmail.com | 개인정보보호책임자 : 배은아</p>
+					<p>Copyright thinker corp. All Right Reserved.</p>
+				</div>
+				<div class="col-sm-2 mt-3 pe-0 text-end">
+					<a href="https://www.facebook.com/"><img
+							src="{{url_for('static',filename='images/mainpage/sns1.png')}}"></a>
+					<a href="https://www.google.co.kr/?hl=ko"><img
+							src="{{url_for('static',filename='images/mainpage/sns2.png')}}"></a>
+					<a href="https://www.youtube.com/"><img
+							src="{{url_for('static',filename='images/mainpage/sns3.png')}}"></a>
+					<a href="https://www.instagram.com/"><img
+							src="{{url_for('static',filename='images/mainpage/sns4.png')}}"></a>
+				</div>
+			</footer>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"
+		integrity="sha384-Rx+T1VzGupg4BHQYs2gCW9It+akI2MM/mndMCy36UVfodzcJcF0GGLxZIzObiEfa"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>
