@@ -1,78 +1,30 @@
-# A very simple Flask Hello World app for you to get started with...
-
-import requests
-from flask import Flask, render_template, request, redirect, session, url_for,flash
+from flask import Flask, render_template, request, redirect, session, flash
 from mysql import Mysql
-import pymysql
 from datetime import timedelta
-from authlib.integrations.flask_client import OAuth
 from functools import wraps
-import os
 import random
 import string
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-import pandas as pd
-
+from loginapi import naver_login, kakao_login, google_login
 from passlib.hash import pbkdf2_sha256
-import config
 
+# Flask 애플리케이션 생성
 app = Flask(__name__)
+
+# 세션에서 사용할 시크릿키 설정
 app.secret_key = "eungok"
+
+# 세션 수명 설정
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=15)
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 
+# Mysql 클래스의 인스턴스 생성
 mysql = Mysql()
 
-# OAuth Setup
-oauth = OAuth(app)
-
-# Naver OAuth
-naver_client_id = config.naver_client_id
-naver_client_secret = config.naver_client_secret
-naver=oauth.register(
-    name='naver',
-    client_id = naver_client_id,
-    client_secret = naver_client_secret,
-    access_token_url = 'https://nid.naver.com/oauth2.0/token',
-    access_token_params = None,
-    authorize_url = 'https://nid.naver.com/oauth2.0/authorize',
-    authorize_params = None,
-    refresh_token_url = None,
-    redirect_uri = 'http://thinkerin.pythonanywhere.com/callback',
-    client_kwargs = {'scope': 'name email'})
-
-# Google OAuth
-google_client_id = config.google_client_id
-google_client_secret = config.google_client_secret
-google=oauth.register(
-    name="google",
-    client_id = google_client_id,
-    client_secret = google_client_secret,
-    access_token_url = "https://www.googleapis.com/oauth2/v4/token",
-    access_token_params = None,
-    authorize_url = "https://accounts.google.com/o/oauth2/v2/auth",
-    authorize_params = None,
-    api_base_url = "https://www.googleapis.com/oauth2/v3/",
-    client_kwargs = {"scope": "openid email profile"},
-    server_metadata_url = 'https://accounts.google.com/.well-known/openid-configuration')
-
-# Kakao OAuth
-kakao_client_id = config.kakao_client_id
-kakao_client_secret = config.kakao_client_secret
-kakao = oauth.register(
-    name = 'kakao',
-    client_id = kakao_client_id,
-    client_secret = kakao_client_secret,
-    access_token_url = 'https://kauth.kakao.com/oauth/token',
-    access_token_params = None,
-    authorize_url = 'https://kauth.kakao.com/oauth/authorize',
-    authorize_params = None,
-    refresh_token_url = None,
-    redirect_uri = 'http://thinkerin.pythonanywhere.com/kakao-callback')
-
+# 로그인(세션) 확인 데코레이터
 def is_loged_in(func):
     @wraps(func)
     def wrap(*args, **kwargs):
@@ -82,22 +34,23 @@ def is_loged_in(func):
             return redirect('/login')
     return wrap
 
-def connect():
-        return pymysql.connect(host=mysql.host, user=mysql.user, db=mysql.db, password=mysql.password, charset=mysql.charset)
-
-# Generate a random verification code
+# 회원가입 시 이메일로 전송되는 인증코드 생성
 def generate_verification_code():
     number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     return number
 
-# Send email verification link
+# 이메일로 인증 링크를 보내는 함수
 def send_verification_email(email, number):
-    db = connect()
+    # 데이터베이스 연결
+    db = mysql.connect()
     cursor = db.cursor()
+    # 사용자의 이메일이 데이터베이스에 있는지 확인
     sql='SELECT * FROM user WHERE email = %s'
     cursor.execute(sql, [email])
     users = cursor.fetchone()
-    print(users)
+    # print(users)
+
+    # 사용자가 없다면(이메일이 등록되어 있지 않은 경우), 이메일 및 코드 정보를 삽입
     if users==None:
         sql = '''
             INSERT INTO user (email, code )
@@ -107,20 +60,25 @@ def send_verification_email(email, number):
         print(number)
         cursor.execute(sql,(email, verification_code))
         db.commit()
+
+        # 이메일 발송을 위한 설정
         from_email = 'eunahp86@gmail.com'
         password = 'trwcpqrofghewkxy'
         subject = 'Email Verification'
 
+        # 이메일 내용 설정
         msg = MIMEMultipart()
         msg['From'] = from_email
         msg['To'] = email
         msg['Subject'] = subject
 
+        # 이메일 본문내용 작성
         verification_link = f'https://thinkerin.pythonanywhere.com/verify?email={email}&code={number}'
         message = f"Hello,\n\nPlease click the following link to verify your email:\n\n{verification_link}\n\nBest regards,\nYour Website Team"
-
+        # 이메일 내용을 MIMEText로 첨부
         msg.attach(MIMEText(message, 'plain'))
 
+        # 이메일 전송 시도
         try:
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()
@@ -130,6 +88,7 @@ def send_verification_email(email, number):
             print('Email sent successfully!')
         except Exception as e:
             print(f'Error sending email: {e}')
+    # 이미 사용자가 있다면, 해당 사용자의 코드 업데이트 후 이메일 재전송
     else:
         sql = '''
             UPDATE user SET code = %s WHERE email = %s
@@ -163,63 +122,78 @@ def send_verification_email(email, number):
             print(f'Error sending email: {e}')
         return 'Sent'
 
+# 메인 페이지
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# 기업소개 페이지
 @app.route('/intro', methods=['GET', 'POST'])
 def intro():
     if request.method =="GET":
         return render_template('intro.html')
 
-
+# 회원가입을 위한 이메일 입력 페이지
 @app.route('/email', methods=['GET', 'POST'])
 def email():
     if request.method == 'POST':
         email = request.form.get('email')
-        db = connect()
+        db = mysql.connect()
         curs = db.cursor()
 
+        # 사용자가 입력한 이메일을 데이터베이스에서 검색, 결과 가져오기
         sql = f'SELECT * FROM user WHERE email = %s;'
         curs.execute(sql , email)
         rows = curs.fetchone()
         if rows:
-            if rows[6] == '1':
+            # 이미 인증된 이메일인 경우 로그인 페이지로 이동
+            if rows[6]:
+                flash("이미 가입된 이메일입니다.")
                 return render_template('login.html')
+            # 인증되지 않은 경우 등록 페이지로 이동
             else:
                 return render_template('register.html',email=email)
+        # 등록되지 않은 이메일로도 등록 페이지로 이동
         else:
             return render_template('register.html',email=email)
+    # GET 방식인 경우 이메일 입력 페이지로 이동
     else:
         return render_template('email.html')
 
+# 가입이 완료되었으니 해당 메일로 발송된 인증메일 확인하라는 페이지
 @app.route('/emailcheck', methods=['GET', 'POST'])
 def emailcheck():
     email=request.form.get('email')
     return render_template('emailcheck.html')
 
+# 회원가입 페이지
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
+        # 사용자가 제출한 데이터를 가져옴
         username = request.form.get('username')
         email = request.form.get('email')
         phone = request.form.get('phone')
         password = request.form.get('password')
+        # 이메일 인증 코드 생성
         number = generate_verification_code()
+        # 생성된 코드를 해당 이메일로 전송
         send_verification_email(email, number)
+        # 비밀번호 해싱
         password = mysql.hashing_password(password)
-        print(password)
-        db = connect()
+        # print(password)
+        db = mysql.connect()
         curs = db.cursor()
+
+        # 이메일을 기반으로 사용자 정보 업데이트
         sql = f'UPDATE user SET username =%s, phone=%s,password=%s WHERE email = %s;'
         curs.execute(sql , (username,phone,password,email))
         db.commit()
         db.close()
+        # 이메일 확인 페이지로 이동
         return render_template('emailcheck.html', email=email)
-
     elif request.method == "GET":
         return redirect('/email')
-
 
 # Verification route
 @app.route('/verify', methods=['GET', 'POST'])
@@ -227,18 +201,26 @@ def verify():
     if request.method == 'GET':
         email = request.args.get('email')
         code = request.args.get('code')
-        db=connect()
+        db = mysql.connect()
         cursor = db.cursor()
-        sql='SELECT * FROM user WHERE email = %s'
+        sql = 'SELECT * FROM user WHERE email = %s'
         cursor.execute(sql, [email])
         users = cursor.fetchone()
-        print(users)
+        # print(users)
+
+        # 이메일이 등록되지 않은 경우
         if users == None:
-            flash('Email not registered.')
+            # flash 메시지: 이메일이 등록되지 않았음
+            flash('이메일이 등록되지 않았습니다.')
+            # 실패 메시지 반환
             return "fail"
+        # 이메일이 등록된 경우
         else:
+            # 사용자가 입력한 확인 코드와 저장된 해시된 코드 비교
             if pbkdf2_sha256.verify(code, users[5]):
-                flash('Email verified successfully.')
+                # flash 메시지: 이메일 인증 성공
+                flash('이메일 인증에 성공했습니다.')
+                # 데이터베이스에서 사용자 'auth' 값을 업데이트
                 sql = '''
                 UPDATE user SET auth = %s WHERE email = %s
             '''
@@ -247,7 +229,9 @@ def verify():
 
                 return redirect('/login')
             else:
-                flash('Invalid verification code.')
+                # flash 메시지: 잘못된 확인 코드
+                flash('잘못된 확인 코드입니다.')
+                # 실패 메시지 반환
                 return "fail"
 
 
@@ -258,7 +242,7 @@ def login():
     elif request.method == "POST":
         email = request.form.get('email')
         password = request.form.get('password')
-        db = connect()
+        db = mysql.connect()
         curs = db.cursor()
 
         sql = f'SELECT * FROM user WHERE email = %s;'
@@ -312,7 +296,7 @@ def test():
         user_iduser = session.get('iduser')
 
         # Check if user info exists in the result table
-        db = connect()
+        db = mysql.connect()
         curs = db.cursor()
         sql = "SELECT * FROM result WHERE user_iduser = %s"
         curs.execute(sql, (user_iduser,))
@@ -324,7 +308,7 @@ def test():
             return render_template('tested.html')
 
         # User result doesn't exist, check if user info exists
-        db = connect()
+        db = mysql.connect()
         curs = db.cursor()
         sql = "SELECT * FROM info WHERE user_iduser = %s"
         curs.execute(sql, (user_iduser,))
@@ -357,105 +341,26 @@ def test():
         print(result)
         return redirect('/result')
 
+    # 문항수가 많아져도 일일히 작성하지 않고 반복문사용시 (** 랜덤으로 문제가 뽑히는 경우 채점상황도 고려해봐야함/Mysql파일도수정필요)
+    # elif request.method == "POST":
+    #     user_iduser = session.get('iduser')
+    #     answers = {}
+    #     for i in range(1, 11):  # Assuming 10 questions (Change the range according to your needs)
+    #         answers[f'q{i}'] = request.form[str(i)]  # Assuming the HTML form has input names '1', '2', ..., '10'
 
+    #     result = mysql.insert_answers(user_iduser, **answers)  # Insert all answers into the database
+    #     return redirect('/result')
 
-
-# 네이버 로그인
-@app.route('/naver')
-def NaverLogin():
-    return naver.authorize_redirect(redirect_uri=url_for('callback', _external=True))
-
-@app.route('/callback')
-def callback():
-    naver_token = naver.authorize_access_token()
-    user_info = naver.get('https://openapi.naver.com/v1/nid/me').json()
-    # Process user_info and store session or user data as needed
-    social_name = user_info['response']['name']
-    social_email = user_info['response']['email']
-    social_phone =  user_info['response']['mobile']
-    social_password = "naver"
-    result  = mysql.social_check(social_name, social_email, social_phone, social_password)
-
-    db = connect()
-    curs = db.cursor()
-    sql = f'SELECT * FROM user WHERE email = %s;'
-    curs.execute(sql , social_email)
-    result = curs.fetchone()
-    print(result[0])
-
-    if len(str(result)) != 0:
-        session['is_loged_in'] = True
-        session['username'] = result[1]
-        session['iduser'] = result[0]
-        return redirect('/')
-    print(result)
-    return redirect('/')
-
-# Google 로그인
-# @app.route('/google')
-# def googlelogin():
-#     google = google.create_client('google')  # create the google oauth client
-#     redirect_uri = url_for('authorize', _external=True)
-#     return google.authorize_redirect(redirect_uri)
-
-# @app.route('/authorize')
-# def authorize():
-#     google = google.create_client('google')  # create the google oauth client
-#     token = google.authorize_access_token()  # Access token from google (needed to get user info)
-#     resp = google.get('userinfo')  # userinfo contains stuff u specificed in the scrope
-#     user_info = resp.json()
-#     user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
-#     print(f'user: {user}')
-#     social_name = user['name']
-#     social_email = user['email']
-#     print(social_email)
-#     social_phone = None
-#     social_password = 'google'
-#     result  = mysql.social_check(social_name, social_email, social_phone, social_password)
-#     if len(str(result)) != 0:
-#         session['is_loged_in'] = True
-#         session['username'] = social_name
-#         db = pymysql.connect(host=mysql.host, user=mysql.user, db=mysql.db, password=mysql.password, charset=mysql.charset)
-#         curs = db.cursor()
-
-#         sql = f'SELECT * FROM user WHERE email = %s;'
-#         curs.execute(sql , social_email)
-#         result = curs.fetchone()
-#         print(result[3])
-#         if result[3] == None:
-#             return render_template('add.html', email=social_email)
-#         else:
-#             return redirect('/')
-
-# @app.route('/update_phone' , methods=['GET', 'POST'])
-# def update():
-#     email = request.form.get("email")
-#     phone = request.form.get("phone")
-#     mysql.additional_info(email, phone)
-#     return redirect('/')
-
-# # 카카오 로그인 - 추후 추가 예정
-# @app.route('/kakao')
-# def kakao_login():
-#     return kakao.authorize_redirect(redirect_uri=url_for('kakao_callback', _external=True))
-
-# @app.route('/kakao-callback')
-# def kakao_callback():
-#     kakao_token = kakao.authorize_access_token()
-#     user_info = kakao.get('user').json()
-#     user = oauth.kakao.userinfo()
-#     print(user)
-#     # social_name = user['name']
-#     # social_email = user['email']
-#     # social_phone =  user['mobile']
-#     # social_password = "kakao"
-#     # result  = mysql.social_check(social_name, social_email, social_phone, social_password)
-#     # if len(str(result)) != 0:
-#     #     session['is_loged_in'] = True
-#     #     session['username'] = social_name
-#     #     return redirect('/')
-#     # print(result)
-#     # return redirect('/')
+@app.route('/update_phone' , methods=['GET', 'POST'])
+def update():
+    email = request.form.get("email")
+    username = request.form.get("username")
+    phone = request.form.get("phone")
+    rows = mysql.additional_info(email,username,phone)
+    session['is_loged_in'] = True
+    session['username'] = rows[0][1]
+    session['iduser'] = rows[0][0]
+    return redirect('/', is_loged_in = session['is_loged_in'] , username=session['username'], iduser=session['iduser'] )
 
 @app.route('/list', methods=['GET','POST'])
 def list() :
@@ -495,50 +400,67 @@ def board_register() :
 @app.route('/result/', methods=['GET', 'POST'])
 @is_loged_in
 def result():
-    if request.method =="GET":
-        print(session['iduser'])
-        cat_score, rec_book = mysql.calculate_score(session['iduser'])
-        scores = mysql.calculate_score2()
-        # 이 곳에  sql query문으로 내 점수의 평균 값, 성별 평균, 연령대의 평균, 총 평균 값을 구하는 함수를 생성하시거나
-        # pandas를 이용하여 점수 테이블의 정보를 데이터프레임화
+    if request.method == "GET":
+        user_iduser = session.get('iduser')
 
-        # 데이터프레임에서 내 점수의 평균 값 구하기 loc[index조건]를 이용하여 내 데이터만 출력 후 mean()을 이용하여 평균 값 구하기
-        user_mean = scores.loc[scores['user_iduser'] == session['iduser'], 'mean_score'].values[0]
-        # 로그인한 아이디의 성별 값 불러오기
-        user_sex = scores.loc[scores['user_iduser'] == session['iduser'], 'sex'].values[0]
-        # 성별로 그룹화하여 성별 평균 점수 구하기
-        sex_score = scores.loc[scores['sex'] == user_sex, 'mean_score'].mean()
-        # 로그인한 아이디의 연령대 구하기
-        user_age = scores.loc[scores['user_iduser'] == session['iduser'], 'age'].values[0]
-        # 연령대로 그룹화 하여 평균 점수 구하기
-        age_score = scores.loc[scores['age'] == user_age, 'mean_score'].mean()
-        # 전체의 데이터 점수를 mean()함수를 이용하여 평균 값 구하기
-        mean_score = scores['mean_score'].mean()
-        # 위에서 만들어진 4개의 데이터를 리스트의 형태로 만들기
-        score_list = [user_mean, sex_score, age_score, mean_score]
-        # 만들어진 리스트 데이터를 render_template()안에 데이터로 삽입하여 chartjs의 수치 값 하드코딩한 부분에 데이터로 변경
+        db = mysql.connect()
+        curs = db.cursor()
+        sql = "SELECT * FROM result WHERE user_iduser = %s"
+        curs.execute(sql, (user_iduser,))
+        user_result = curs.fetchone()
+        db.close()
 
-        print(cat_score)
-        print(rec_book)
-        return render_template('result.html', data=cat_score, books=rec_book, scores=score_list)
+        if user_result:
+            print(session['iduser'])
+            cat_score, rec_book = mysql.calculate_score(session['iduser'])
+            scores = mysql.calculate_score2()
 
+            # 데이터프레임에서 내 점수의 평균 값 구하기 loc[index조건]를 이용하여 내 데이터만 출력 후 mean()을 이용하여 평균 값 구하기
+            user_mean = scores.loc[scores['user_iduser'] == session['iduser'], 'mean_score'].values[0]
+            # 로그인한 아이디의 성별 값 불러오기
+            user_sex = scores.loc[scores['user_iduser'] == session['iduser'], 'sex'].values[0]
+            # 성별로 그룹화하여 성별 평균 점수 구하기
+            sex_score = scores.loc[scores['sex'] == user_sex, 'mean_score'].mean()
+            # 로그인한 아이디의 연령대 구하기
+            user_age = scores.loc[scores['user_iduser'] == session['iduser'], 'age'].values[0]
+            # 연령대로 그룹화 하여 평균 점수 구하기
+            age_score = scores.loc[scores['age'] == user_age, 'mean_score'].mean()
+            # 전체의 데이터 점수를 mean()함수를 이용하여 평균 값 구하기
+            mean_score = scores['mean_score'].mean()
+            # 위에서 만들어진 4개의 데이터를 리스트의 형태로 만들기
+            score_list = [user_mean, sex_score, age_score, mean_score]
+            # 만들어진 리스트 데이터를 render_template()안에 데이터로 삽입하여 chartjs의 수치 값 하드코딩한 부분에 데이터로 변경
 
-# @app.route('/result/<id>', methods=['GET', 'POST'])
-# # @is_loged_in
-# def result(id):
-#     result = mysql.get_result_by_user(id)
-#     if result:
-#         cat_score = result
-#     else:
-#         cat_score = mysql.calculate_score(id)
+            print(cat_score)
+            print(rec_book)
+            return render_template('result.html', data=cat_score, books=rec_book, scores=score_list)
 
-#     print(cat_score)
-#     return render_template('result.html', data=cat_score)
+        else:
+            return render_template('totest.html')
+
 
 
 @app.route('/end')
 def end():
     return render_template('end.html')
+
+@app.route('/tested')
+@is_loged_in
+def tested():
+    return render_template('tested.html')
+
+@app.route('/totest')
+@is_loged_in
+def totest():
+    return render_template('totest.html')
+
+@app.route('/notice')
+def notice():
+    return render_template('notice.html')
+
+@app.route('/event')
+def event():
+    return render_template('event.html')
 
 @app.route('/faq')
 def faq():
@@ -549,5 +471,11 @@ def logout():
     session.clear()
     return redirect('/')
 
+# Social_login
+app.register_blueprint(naver_login.bp)
+app.register_blueprint(kakao_login.bp)
+app.register_blueprint(google_login.bp)
+
+# Flask 애플리케이션 실행
 if __name__ == '__main__':
     app.run(debug=True)

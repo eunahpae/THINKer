@@ -1,6 +1,14 @@
 {% extends "layout.html" %}
 {% block body %}
 
+{%with messages = get_flashed_messages()%}
+  {%if messages %}
+    <script type="text/javascript">
+      alert("{{messages[-1]}}");
+    </script>
+    {%endif%}
+{%endwith%}
+
 <div class="content_wrap">
   <div class="box">
     <h1>Login</h1>
