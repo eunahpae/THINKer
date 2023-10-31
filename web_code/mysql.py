@@ -3,11 +3,13 @@ from passlib.hash import pbkdf2_sha256
 import numpy as np
 import pandas as pd
 
+# 패스워트를 해싱 처리하는 함수
 def hash_password(original_password):
     salt = 'eungok'
     password = original_password + salt
     password = pbkdf2_sha256.hash(password)
     return password
+# 로그인시 입력된 패스워드가 맞는지 비교/확인하는 함수
 def check_password(input_password, hashed_password):
     print(input_password,hashed_password)
     salt = 'eungok'
@@ -36,7 +38,8 @@ class Mysql:
             db.commit()
         db.close()
         return result
-
+    
+    # 소셜로그인시 사용자 존재여부 확인하여 데이터베이스 삽입
     def social_check(self, social_name, social_email, social_phone, social_password):
         sql = "SELECT * FROM user WHERE email = %s"
         with self.connect().cursor() as curs:
@@ -49,12 +52,15 @@ class Mysql:
             sql = "INSERT INTO user (username, email, phone, password) VALUES (%s, %s, %s, %s)"
             return self.execute_sql(sql, social_name, social_email, social_phone, social_password)
 
+    # 비밀번호 확인 함수
     def verify_password(self, password, hashed_password):
         return check_password(password, hashed_password)
 
+    # 비밀번호 해싱 함수
     def hashing_password(self, password):
         return hash_password(password)
 
+    # 최초 구글로그인시 부족한 사용자 정보 추가로 받는 함수
     def additional_info(self, email, phone):
         sql = "UPDATE user SET phone =%s WHERE email =%s;"
         with self.connect().cursor() as curs:
@@ -62,28 +68,25 @@ class Mysql:
             rows = curs.fetchall()
         return rows
 
+    # 데이터베이스 사용자 삽입 함수
     def insert_user(self, username, email, phone, password):
         hashed_password = hash_password(password)
         sql = "INSERT INTO user (username, email, phone, password) VALUES (%s, %s, %s, %s)"
         return self.execute_sql(sql, username, email, phone, hashed_password)
 
+    # 데이터베이스 사용자 정보 삽입 함수
     def insert_info(self, user_iduser, sex, age, location, edu):
         sql = "INSERT INTO info (user_iduser, sex, age, location, edu) VALUES (%s, %s, %s, %s, %s)"
         return self.execute_sql(sql, user_iduser, sex, age, location, edu)
 
-    def insert_answer(self, user_iduser, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10):
-        sql = "INSERT INTO result (user_iduser, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
-        return self.execute_sql(sql, user_iduser, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10)
-    
     # 문항수가 많아져도 일일히 작성하지 않고 반복문사용시 (** 랜덤으로 문제가 뽑히는 경우 채점상황도 고려해봐야함/app파일도수정필요)
-    # def insert_answers(self, user_iduser, **answers):
-    #     # Convert the answers dictionary into a list preserving the insertion order
-    #     answers_list = [answers[f'q{i}'] for i in range(1, 11)]  # Assuming 10 questions    
-    #     # Create the SQL query dynamically
-    #     sql = "INSERT INTO result (user_iduser, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"        
-    #     # Execute the SQL query with the user ID and answers
-    #     return self.execute_sql(sql, user_iduser, *answers_list)
+    def insert_answers(self, user_iduser, **answers):
+        # 답변 삽입 순서를 유지하는 목록으로 변환 (10문제로 가정, 문제수에 따라 범위변경 필요)
+        answers_list = [answers[f'q{i}'] for i in range(1, 11)]          
+        sql = "INSERT INTO result (user_iduser, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)" 
+        return self.execute_sql(sql, user_iduser, *answers_list)
 
+    # 전체 사용자 조회 함수
     def get_user(self):
         sql = "SELECT * FROM user;"
         with self.connect().cursor() as curs:
@@ -91,10 +94,12 @@ class Mysql:
             rows = curs.fetchall()
         return rows
     
+    # 사용자 삭제 함수
     def del_user(self, email):
         sql = "DELETE FROM user WHERE email = %s"
         return self.execute_sql(sql, email)
 
+    # 시험문제 조회하는 함수
     def get_quiz(self):
         sql = "SELECT * FROM quiz;"
         with self.connect().cursor() as curs:
@@ -103,6 +108,7 @@ class Mysql:
             print(rows)
         return rows
 
+    # 시험 결과 계산 함수 1 for 오각형 그래프
     def calculate_score(self,id):
         # 데이터베이스 연결
         db = self.connect()
@@ -141,6 +147,7 @@ class Mysql:
         # 카테고리별 점수와 추천 도서 정보 반환
         return cat_score, rec_book
 
+    # 시험 결과 계산 함수 2 for 바형 그래프
     def calculate_score2(self):
         db = self.connect()
         curs = db.cursor(pymysql.cursors.DictCursor)

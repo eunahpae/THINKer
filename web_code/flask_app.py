@@ -1,13 +1,21 @@
+# Flask 모듈을 가져옴
 from flask import Flask, render_template, request, redirect, session, flash
+# MySQL 모듈을 가져옴
 from mysql import Mysql
+# 시간 관련 모듈인 timedelta를 가져옴
 from datetime import timedelta
+# 데코레이터를 사용하기 위한 functools 모듈의 wraps 함수를 가져옴
 from functools import wraps
+# 임의의 문자열을 생성하기 위한 random과 string 모듈을 가져옴
 import random
 import string
+# 이메일 전송을 위한 smtplib와 MIME 모듈을 가져옴
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+# 외부 파일에서 로그인 관련 기능을 가져옴
 from loginapi import naver_login, kakao_login, google_login
+# 비밀번호 해싱을 위한 passlib 모듈의 pbkdf2_sha256 함수를 가져옴
 from passlib.hash import pbkdf2_sha256
 
 # Flask 애플리케이션 생성
@@ -28,18 +36,21 @@ mysql = Mysql()
 def is_loged_in(func):
     @wraps(func)
     def wrap(*args, **kwargs):
+        # 세션에 사용자가 로그인했는지 확인
         if 'is_loged_in' in session:
             return func(*args, **kwargs)
         else:
+            # 로그인이 되어 있지 않다면 로그인 페이지로 리디렉션
             return redirect('/login')
     return wrap
 
 # 회원가입 시 이메일로 전송되는 인증코드 생성
 def generate_verification_code():
+    # 랜덤한 6자리 코드 생성
     number = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
     return number
 
-# 이메일로 인증 링크를 보내는 함수
+# 회원가입 시 이메일로 인증 링크를 보내는 함수
 def send_verification_email(email, number):
     # 데이터베이스 연결
     db = mysql.connect()
@@ -52,6 +63,7 @@ def send_verification_email(email, number):
 
     # 사용자가 없다면(이메일이 등록되어 있지 않은 경우), 이메일 및 코드 정보를 삽입
     if users==None:
+        # 이메일과 코드 정보를 데이터베이스에 삽입
         sql = '''
             INSERT INTO user (email, code )
             VALUES (%s ,%s )
@@ -132,6 +144,32 @@ def index():
 def intro():
     if request.method =="GET":
         return render_template('intro.html')
+    
+# 평가안내 페이지
+@app.route('/eve', methods=['GET', 'POST'])
+def eve():
+    if request.method =="GET":
+        return render_template('eve.html')
+
+# 공지사항 페이지
+@app.route('/notice')
+def notice():
+    return render_template('notice.html')
+
+# 이벤트 페이지
+@app.route('/event')
+def event():
+    return render_template('event.html')
+
+# 자주 묻는 질문 페이지
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
+# 미완성 페이지
+@app.route('/end')
+def end():
+    return render_template('end.html')
 
 # 회원가입을 위한 이메일 입력 페이지
 @app.route('/email', methods=['GET', 'POST'])
@@ -245,33 +283,32 @@ def login():
         db = mysql.connect()
         curs = db.cursor()
 
-        sql = f'SELECT * FROM user WHERE email = %s;'
+        # 사용자가 입력한 이메일이 DB에 있는지 확인
+        sql = 'SELECT * FROM user WHERE email = %s;'
         curs.execute(sql , email)
-
         rows = curs.fetchall()
-        print(rows)
+        # print(rows)
 
         if rows:
-            # result = pbkdf2_sha256.verify(password, rows[0][4])
+            # 입력한 비밀번호를 해시된 비밀번호와 비교하여 인증
             result = mysql.verify_password(password, rows[0][4])
             if result:
+                # 세션 설정하여 로그인 유지
                 session['is_loged_in'] = True
                 session['username'] = rows[0][1]
                 session['iduser'] = rows[0][0]
 
                 print(session['is_loged_in'])
-                return redirect('/')
+                # 로그인 성공 시 메인 페이지로 리디렉션
                 return render_template('index.html', is_loged_in = session['is_loged_in'] , username=session['username'], iduser=session['iduser'] )
             else:
+                # 실패 시 로그인 페이지로 리디렉션
+                flash("비밀번호가 일치하지 않습니다.")
                 return redirect('/login')
         else:
+            # 등록되지 않은 이메일로 로그인 시도 시 로그인 페이지로 리디렉션
+            flash("해당 이메일로 등록된 사용자 정보가 없습니다.")
             return render_template('login.html')
-
-
-@app.route('/eve', methods=['GET', 'POST'])
-def eve():
-    if request.method =="GET":
-        return render_template('eve.html')
 
 
 @app.route('/testinfo', methods=['GET' , 'POST'])
@@ -279,6 +316,7 @@ def eve():
 def testinfo():
     if request.method == "GET":
         return render_template('testinfo.html')
+    # POST 요청 시 사용자 정보 DB에 추가 후 시험(퀴즈) 페이지 렌더링
     elif request.method == "POST":
         user_iduser = request.form['iduser']
         sex = request.form['sex']
@@ -287,7 +325,7 @@ def testinfo():
         edu = request.form['edu']
         result = mysql.insert_info(user_iduser, sex, age, location, edu)
         quiz = mysql.get_quiz()
-        return render_template('test.html',quiz=quiz)
+        return render_template('test.html', quiz=quiz)
 
 @app.route('/test', methods=['GET','POST'])
 @is_loged_in
@@ -295,7 +333,7 @@ def test():
     if request.method == "GET":
         user_iduser = session.get('iduser')
 
-        # Check if user info exists in the result table
+        # 데이터베이스 결과 테이블에서 사용자 정보 존재 여부 확인
         db = mysql.connect()
         curs = db.cursor()
         sql = "SELECT * FROM result WHERE user_iduser = %s"
@@ -304,10 +342,11 @@ def test():
         db.close()
 
         if user_result:
-            # User result exists, redirect to result page
-            return render_template('tested.html')
+            flash("이미 응시한 이력이 있습니다.")
+            # 사용자 결과가 있는 경우 결과 페이지로 이동
+            return redirect('/result')
 
-        # User result doesn't exist, check if user info exists
+        # 결과테이블에 사용자 정보가 없고, info테이블에 사용자 정보가 있는지 확인
         db = mysql.connect()
         curs = db.cursor()
         sql = "SELECT * FROM info WHERE user_iduser = %s"
@@ -316,40 +355,24 @@ def test():
         db.close()
 
         if user_info:
-            # User info exists, proceed to test
+            # info테이블에 사용자 정보가 있는 경우 퀴즈 페이지 렌더링
             quiz = mysql.get_quiz()
             return render_template('test.html', quiz=quiz)
         else:
-            # User info doesn't exist, redirect to testinfo
+            # info테이블에 사용자 정보가 없는 경우 정보 입력 페이지로 리디렉션
             return redirect('/testinfo')
 
-    elif request.method == "POST":
-        # Get user_iduser from session
-        user_iduser = session.get('iduser')
-        q1 = request.form['1']
-        q2 = request.form['2']
-        q3 = request.form['3']
-        q4 = request.form['4']
-        q5 = request.form['5']
-        q6 = request.form['6']
-        q7 = request.form['7']
-        q8 = request.form['8']
-        q9 = request.form['9']
-        q10 = request.form['10']
-
-        result = mysql.insert_answer(user_iduser, q1, q2, q3, q4, q5, q6, q7, q8, q9, q10)
-        print(result)
-        return redirect('/result')
-
     # 문항수가 많아져도 일일히 작성하지 않고 반복문사용시 (** 랜덤으로 문제가 뽑히는 경우 채점상황도 고려해봐야함/Mysql파일도수정필요)
-    # elif request.method == "POST":
-    #     user_iduser = session.get('iduser')
-    #     answers = {}
-    #     for i in range(1, 11):  # Assuming 10 questions (Change the range according to your needs)
-    #         answers[f'q{i}'] = request.form[str(i)]  # Assuming the HTML form has input names '1', '2', ..., '10'
-
-    #     result = mysql.insert_answers(user_iduser, **answers)  # Insert all answers into the database
-    #     return redirect('/result')
+    elif request.method == "POST":
+        user_iduser = session.get('iduser')
+        answers = {}
+        # 10문제로 가정 (필요에 따라 범위 변경 필요)
+        for i in range(1, 11):
+            # HTML 양식에 입력 이름 '1', '2', ..., '10'
+            answers[f'q{i}'] = request.form[str(i)]  
+            # 모든 답변을 데이터베이스에 삽입
+            result = mysql.insert_answers(user_iduser, **answers)
+    return redirect('/result')
 
 @app.route('/update_phone' , methods=['GET', 'POST'])
 def update():
@@ -436,36 +459,12 @@ def result():
             return render_template('result.html', data=cat_score, books=rec_book, scores=score_list)
 
         else:
-            return render_template('totest.html')
+            flash("응시 이력이 없습니다. 시험 응시 페이지로 가시겠습니까?")
+            return redirect('/test')
 
 
 
-@app.route('/end')
-def end():
-    return render_template('end.html')
-
-@app.route('/tested')
-@is_loged_in
-def tested():
-    return render_template('tested.html')
-
-@app.route('/totest')
-@is_loged_in
-def totest():
-    return render_template('totest.html')
-
-@app.route('/notice')
-def notice():
-    return render_template('notice.html')
-
-@app.route('/event')
-def event():
-    return render_template('event.html')
-
-@app.route('/faq')
-def faq():
-    return render_template('faq.html')
-
+# 로그아웃 : 세션종료
 @app.route('/logout')
 def logout():
     session.clear()
