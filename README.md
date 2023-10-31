@@ -4,7 +4,7 @@
 
 웹사이트 THINKer는 현대사회의 문제로 대두되는 **성인 문해력 저하** 실태를 짚어보고, 독서능력진단평가를 통해 이를 개선할 해법을 모색하고자 제작되었습니다.
 
-[THINKer*](https://eunahpae.pythonanywhere.com/)
+URL : [THINKer*](https://eunahpae.pythonanywhere.com/)
 
 ## 설치 방법
 
