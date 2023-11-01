@@ -3,7 +3,7 @@ from passlib.hash import pbkdf2_sha256
 import numpy as np
 import pandas as pd
 
-# 패스워트를 해싱 처리하는 함수
+# 패스워드를 해싱 처리하는 함수
 def hash_password(original_password):
     salt = 'eungok'
     password = original_password + salt
@@ -18,7 +18,7 @@ def check_password(input_password, hashed_password):
     return result
 
 class Mysql:
-    # MySQL 데이터베이스에 연결하기 위한 초기화 함수
+    # MySQL DB에 연결하기 위한 초기화 함수
     def __init__(self, host='thinkerIn.mysql.pythonanywhere-services.com', user='thinkerIn', db='thinkerIn$thinker', password='pyflask9', charset='utf8'):
         self.host = host
         self.user = user
@@ -26,7 +26,7 @@ class Mysql:
         self.password = password
         self.charset = charset
 
-    # 데이터베이스 연결 함수
+    # DB 연결 함수
     def connect(self):
         return pymysql.connect(host=self.host, user=self.user, db=self.db, password=self.password, charset=self.charset)
 
@@ -39,7 +39,7 @@ class Mysql:
         db.close()
         return result
     
-    # 소셜로그인시 사용자 존재여부 확인하여 데이터베이스 삽입
+    # 소셜로그인시 사용자 존재여부 확인하여 DB 삽입
     def social_check(self, social_name, social_email, social_phone, social_password):
         sql = "SELECT * FROM user WHERE email = %s"
         with self.connect().cursor() as curs:
@@ -68,13 +68,13 @@ class Mysql:
             rows = curs.fetchall()
         return rows
 
-    # 데이터베이스 사용자 삽입 함수
+    # DB 사용자 삽입 함수
     def insert_user(self, username, email, phone, password):
         hashed_password = hash_password(password)
         sql = "INSERT INTO user (username, email, phone, password) VALUES (%s, %s, %s, %s)"
         return self.execute_sql(sql, username, email, phone, hashed_password)
 
-    # 데이터베이스 사용자 정보 삽입 함수
+    # DB 사용자 정보 삽입 함수
     def insert_info(self, user_iduser, sex, age, location, edu):
         sql = "INSERT INTO info (user_iduser, sex, age, location, edu) VALUES (%s, %s, %s, %s, %s)"
         return self.execute_sql(sql, user_iduser, sex, age, location, edu)
@@ -110,7 +110,7 @@ class Mysql:
 
     # 시험 결과 계산 함수 1 for 오각형 그래프
     def calculate_score(self,id):
-        # 데이터베이스 연결
+        # DB 연결
         db = self.connect()
         curs = db.cursor()
 

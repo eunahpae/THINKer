@@ -52,10 +52,10 @@ def generate_verification_code():
 
 # 회원가입 시 이메일로 인증 링크를 보내는 함수
 def send_verification_email(email, number):
-    # 데이터베이스 연결
+    # DB 연결
     db = mysql.connect()
     cursor = db.cursor()
-    # 사용자의 이메일이 데이터베이스에 있는지 확인
+    # 사용자의 이메일이 DB에 있는지 확인
     sql='SELECT * FROM user WHERE email = %s'
     cursor.execute(sql, [email])
     users = cursor.fetchone()
@@ -63,7 +63,7 @@ def send_verification_email(email, number):
 
     # 사용자가 없다면(이메일이 등록되어 있지 않은 경우), 이메일 및 코드 정보를 삽입
     if users==None:
-        # 이메일과 코드 정보를 데이터베이스에 삽입
+        # 이메일과 코드 정보를 DB에 삽입
         sql = '''
             INSERT INTO user (email, code )
             VALUES (%s ,%s )
@@ -179,7 +179,7 @@ def email():
         db = mysql.connect()
         curs = db.cursor()
 
-        # 사용자가 입력한 이메일을 데이터베이스에서 검색, 결과 가져오기
+        # 사용자가 입력한 이메일을 DB에서 검색, 결과 가져오기
         sql = f'SELECT * FROM user WHERE email = %s;'
         curs.execute(sql , email)
         rows = curs.fetchone()
@@ -258,7 +258,7 @@ def verify():
             if pbkdf2_sha256.verify(code, users[5]):
                 # flash 메시지: 이메일 인증 성공
                 flash('이메일 인증에 성공했습니다.')
-                # 데이터베이스에서 사용자 'auth' 값을 업데이트
+                # DB에서 사용자 'auth' 값을 업데이트
                 sql = '''
                 UPDATE user SET auth = %s WHERE email = %s
             '''
@@ -333,7 +333,7 @@ def test():
     if request.method == "GET":
         user_iduser = session.get('iduser')
 
-        # 데이터베이스 결과 테이블에서 사용자 정보 존재 여부 확인
+        # DB 결과 테이블에서 사용자 정보 존재 여부 확인
         db = mysql.connect()
         curs = db.cursor()
         sql = "SELECT * FROM result WHERE user_iduser = %s"
@@ -370,7 +370,7 @@ def test():
         for i in range(1, 11):
             # HTML 양식에 입력 이름 '1', '2', ..., '10'
             answers[f'q{i}'] = request.form[str(i)]  
-            # 모든 답변을 데이터베이스에 삽입
+            # 모든 답변을 DB에 삽입
             result = mysql.insert_answers(user_iduser, **answers)
     return redirect('/result')
 
