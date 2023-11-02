@@ -13,7 +13,7 @@ import string
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-# 외부 파일에서 로그인 관련 기능을 가져옴
+# 외부 파일에서 소셜로그인 관련 기능을 가져옴
 from loginapi import naver_login, kakao_login, google_login
 # 비밀번호 해싱을 위한 passlib 모듈의 pbkdf2_sha256 함수를 가져옴
 from passlib.hash import pbkdf2_sha256
@@ -420,6 +420,7 @@ def board_register() :
          result = mysql.get_board_data()
          return render_template('board_register.html', data=result )
 
+# 시험 결과 시각화 페이지
 @app.route('/result/', methods=['GET', 'POST'])
 @is_loged_in
 def result():
@@ -469,6 +470,7 @@ def result():
 def logout():
     session.clear()
     return redirect('/')
+
 
 # Social_login
 app.register_blueprint(naver_login.bp)
