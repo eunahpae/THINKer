@@ -89,7 +89,8 @@ Werkzeug==2.3.6
                   cat_score, rec_book = mysql.**calculate_score**(session['iduser'])
                   scores = mysql.**calculate_score2**()
             
-                  # 데이터프레임에서 내 점수의 평균 값 구하기, loc[index조건]를 이용, 내 데이터만 출력 후 mean()으로 평균값 구하기
+                  # 데이터프레임에서 내 점수의 평균 값 구하기
+                  # loc[index조건]를 이용하여 내 데이터만 출력 후 mean()으로 평균값 구하기
                   user_mean = scores.loc[scores['user_iduser']  == session['iduser'], 'mean_score'].values[0]
                   # 로그인한 아이디의 성별 값 불러오기
                   user_sex = scores.loc[scores['user_iduser']  == session['iduser'], 'sex'].values[0]
