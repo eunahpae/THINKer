@@ -6,7 +6,7 @@
 
 [THINKer*](https://eunahpae.pythonanywhere.com/)
 
-![main.jpg]![image](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/main.jpg)
+![image](https://github.com/eunahpae/THINKer_ver3-4/assets/139094990/9572f596-6e7d-43d5-a639-db44e9538513)
 
 ## 설치 방법
 
@@ -113,12 +113,12 @@ Werkzeug==2.3.6
         
         - 각 항목별 사용자의 점수와 전체 평균 오각형 그래프
             
-            ![result1.jpg](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/result1.jpg)
+            ![image](https://github.com/eunahpae/THINKer_ver3-4/assets/139094990/df0368e4-2f46-4c82-9dc2-70608c41a1dd)
             
         
         - 사용자의 총점과 성별, 연령대, 전체 평균 비교 바형 그래프
             
-            ![result2.jpg](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/result2.jpg)
+            ![image](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/result2.jpg)
             
     
     - **도서추천**
@@ -126,12 +126,12 @@ Werkzeug==2.3.6
         
               ( 현재 장르별 도서 추천기능 구현, 점수별 추천은 아직 개발중 )
         
-        ![book.jpg](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/book.jpg)
+        ![image](https://www.notion.so/THINKer-8e098eb53dc84cf19e3059cfb6d008ca?pvs=4#4816fc57185f47dabff101bf0e95537e)
         
 - **데이터베이스 상호작용**
     - MySQL을 사용하여 사용자 정보, 테스트 결과, 책 정보, 게시판 데이터 저장 및 관리
     - 데이터베이스 연동하여 사용자 정보, 테스트 결과를 활용하여 특정 기능 수행
     
-    ![database.png](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/database.png)
+    ![image](https://github.com/eunahpae/THINKer_ver3-4/assets/139094990/aaa394b6-de7b-460c-88b8-e797fcdb1a9c)
     
 - **레이아웃 분리 /  전체 적용**
