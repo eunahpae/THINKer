@@ -117,14 +117,14 @@ Werkzeug==2.3.6
         
         - 사용자의 총점과 성별, 연령대, 전체 평균 비교 바형 그래프
             
-            ![image](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/result2.jpg)
+            ![image](https://github.com/eunahpae/THINKer_ver3-4/assets/139094990/8ec424d5-a443-414e-ae13-88ddfc5c8134)
             
     
     - **도서추천**
         - 사용자가 사전정보에서 입력한 도서 선호장르를 기반으로 시험점수별 추천 도서 제공
           ( 현재 장르별 도서 추천기능 구현, 점수별 추천은 아직 개발중 )
         
-        ![image](https://www.notion.so/THINKer-8e098eb53dc84cf19e3059cfb6d008ca?pvs=4#4816fc57185f47dabff101bf0e95537e)
+        ![image](https://github.com/eunahpae/THINKer_ver3-4/assets/139094990/c0d65647-7be2-4d8d-8aed-8198d93d7703)
         
 - **데이터베이스 상호작용**
     - MySQL을 사용하여 사용자 정보, 테스트 결과, 책 정보, 게시판 데이터 저장 및 관리
