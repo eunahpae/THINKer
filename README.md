@@ -4,7 +4,7 @@
 
 반응형 웹사이트 THINKer는 현대사회의 문제로 대두되는 **성인 문해력 저하** 실태를 짚어보고, 독서능력진단평가를 통해 이를 개선할 해법을 모색하고자 제작되었습니다.
 
-[THINKer*](https://eunahpae.pythonanywhere.com/)
+사이트 바로가기 : [THINKer*](https://eunahpae.pythonanywhere.com/)
 
 ![image](https://github.com/eunahpae/THINKer_ver3-4/assets/139094990/9572f596-6e7d-43d5-a639-db44e9538513)
 
@@ -19,7 +19,6 @@ dnspython==2.4.0
 exceptiongroup==1.1.2
 Flask==2.3.2
 h11==0.14.0
-
 httpcore==0.17.3
 idna==3.4
 itsdangerous==2.1.2
@@ -68,10 +67,10 @@ Werkzeug==2.3.6
             return rows
     
     **flask_app.py)**
-    				if user_info:
+    	    if user_info:
                 # info테이블에 사용자 정보가 있는 경우 퀴즈 페이지 렌더링
                 quiz = mysql.get_quiz()
-    						# 해당 template에 jinja2 문법을 사용하여 DB에서 시험문제를 불러와 뿌려줌
+    			# 해당 template에 jinja2 문법을 사용하여 DB에서 시험문제를 불러와 뿌려줌
                 return render_template('test.html', quiz=quiz)
             else:
                 # info테이블에 사용자 정보가 없는 경우 정보 입력 페이지로 리디렉션
@@ -123,8 +122,7 @@ Werkzeug==2.3.6
     
     - **도서추천**
         - 사용자가 사전정보에서 입력한 도서 선호장르를 기반으로 시험점수별 추천 도서 제공
-        
-              ( 현재 장르별 도서 추천기능 구현, 점수별 추천은 아직 개발중 )
+          ( 현재 장르별 도서 추천기능 구현, 점수별 추천은 아직 개발중 )
         
         ![image](https://www.notion.so/THINKer-8e098eb53dc84cf19e3059cfb6d008ca?pvs=4#4816fc57185f47dabff101bf0e95537e)
         
