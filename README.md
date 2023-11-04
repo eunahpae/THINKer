@@ -6,7 +6,7 @@
 
 [THINKer*](https://eunahpae.pythonanywhere.com/)
 
-![IMG_0735.jpg](THINKer%20%E1%84%83%E1%85%A9%E1%86%A8%E1%84%89%E1%85%A5%E1%84%82%E1%85%B3%E1%86%BC%E1%84%85%E1%85%A7%E1%86%A8%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%BC%E1%84%80%E1%85%A1%20%E1%84%89%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF%208e098eb53dc84cf19e3059cfb6d008ca/IMG_0735.jpg)
+![main.jpg]![image](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/main.jpg)
 
 ## 설치 방법
 
@@ -91,35 +91,34 @@ Werkzeug==2.3.6
                   scores = mysql.**calculate_score2**()
             
                   # 데이터프레임에서 내 점수의 평균 값 구하기 
-            			# loc[index조건]를 이용, 내 데이터만 출력 후 mean()으로 평균값 구하기
-                  user_mean = scores.loc[scores['user_iduser'] 
-            								== session['iduser'], 'mean_score'].values[0]
+            	  # loc[index조건]를 이용, 내 데이터만 출력 후 mean()으로 평균값 구하기
+                  user_mean = scores.loc[scores['user_iduser']  == session['iduser'], 'mean_score'].values[0]
                   # 로그인한 아이디의 성별 값 불러오기
-                  user_sex = scores.loc[scores['user_iduser'] 
-            							 == session['iduser'], 'sex'].values[0]
-            														  ...
+                  user_sex = scores.loc[scores['user_iduser']  == session['iduser'], 'sex'].values[0]
+            	  
+                  ...
+
                   # 연령대로 그룹화 하여 평균 점수 구하기
-                  age_score = scores.loc[scores['age'] 
-                            == user_age, 'mean_score'].mean()
-                        # 전체의 데이터 점수를 mean()함수를 이용하여 평균 값 구하기
-                        mean_score = scores['mean_score'].mean()
-                        # 위에서 만들어진 4개의 데이터를 리스트의 형태로 만들기
-                        score_list = [user_mean, sex_score, age_score, mean_score]
+                  age_score = scores.loc[scores['age'] == user_age, 'mean_score'].mean()
+                  # 전체의 데이터 점수를 mean()함수를 이용하여 평균 값 구하기
+                  mean_score = scores['mean_score'].mean()
+                  # 위에서 만들어진 4개의 데이터를 리스트의 형태로 만들기
+                  score_list = [user_mean, sex_score, age_score, mean_score]
             
-                        return render_template('result.html', 
-                                data=cat_score, books=rec_book, scores=score_list)
-            														   ...
+                  return render_template('result.html', data=cat_score, books=rec_book, scores=score_list)
+            	 
+                  ...
             ```
             
         
         - 각 항목별 사용자의 점수와 전체 평균 오각형 그래프
             
-            ![IMG_0739.jpg](THINKer%20%E1%84%83%E1%85%A9%E1%86%A8%E1%84%89%E1%85%A5%E1%84%82%E1%85%B3%E1%86%BC%E1%84%85%E1%85%A7%E1%86%A8%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%BC%E1%84%80%E1%85%A1%20%E1%84%89%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF%208e098eb53dc84cf19e3059cfb6d008ca/IMG_0739.jpg)
+            ![result1.jpg](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/result1.jpg)
             
         
         - 사용자의 총점과 성별, 연령대, 전체 평균 비교 바형 그래프
             
-            ![IMG_0740.jpg](THINKer%20%E1%84%83%E1%85%A9%E1%86%A8%E1%84%89%E1%85%A5%E1%84%82%E1%85%B3%E1%86%BC%E1%84%85%E1%85%A7%E1%86%A8%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%BC%E1%84%80%E1%85%A1%20%E1%84%89%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF%208e098eb53dc84cf19e3059cfb6d008ca/IMG_0740.jpg)
+            ![result2.jpg](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/result2.jpg)
             
     
     - **도서추천**
@@ -127,12 +126,12 @@ Werkzeug==2.3.6
         
               ( 현재 장르별 도서 추천기능 구현, 점수별 추천은 아직 개발중 )
         
-        ![IMG_0741.jpg](THINKer%20%E1%84%83%E1%85%A9%E1%86%A8%E1%84%89%E1%85%A5%E1%84%82%E1%85%B3%E1%86%BC%E1%84%85%E1%85%A7%E1%86%A8%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%BC%E1%84%80%E1%85%A1%20%E1%84%89%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF%208e098eb53dc84cf19e3059cfb6d008ca/IMG_0741.jpg)
+        ![book.jpg](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/book.jpg)
         
 - **데이터베이스 상호작용**
     - MySQL을 사용하여 사용자 정보, 테스트 결과, 책 정보, 게시판 데이터 저장 및 관리
     - 데이터베이스 연동하여 사용자 정보, 테스트 결과를 활용하여 특정 기능 수행
     
-    ![database.png](THINKer%20%E1%84%83%E1%85%A9%E1%86%A8%E1%84%89%E1%85%A5%E1%84%82%E1%85%B3%E1%86%BC%E1%84%85%E1%85%A7%E1%86%A8%E1%84%8C%E1%85%B5%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB%20%E1%84%91%E1%85%A7%E1%86%BC%E1%84%80%E1%85%A1%20%E1%84%89%E1%85%A1%E1%84%8B%E1%85%B5%E1%84%90%E1%85%B3%20%E1%84%80%E1%85%A2%E1%84%87%E1%85%A1%E1%86%AF%208e098eb53dc84cf19e3059cfb6d008ca/database.png)
+    ![database.png](https://github.com/eunahpae/THINKer_ver3-4/tree/main/static/images/md/database.png)
     
 - **레이아웃 분리 /  전체 적용**
